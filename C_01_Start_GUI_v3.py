@@ -22,11 +22,11 @@ class StartGame:
                         "Pick the correct answer to score points. "
                         "You can use up to 2 hints per question — each hint "
                         "costs 1 point from your potential score.\n\n"
-                        "Correct, no hints used = 2 points\n"
-                        "Correct, 1 hint used = 1 point\n"
-                        "Correct, 2 hints used = 0 points\n"
-                        "Wrong answer (any hints used) = -1 point\n"
-                        "Wrong answer (no hints used) = 0 points")
+                        "Correct, no hints used = 3 points\n"
+                        "Correct, 1 hint used = 2 point\n"
+                        "Correct, 2 hints used = 1 points\n"
+                        "Wrong answer (no hints used) = 0 point\n"
+                        "Wrong answer (any hints used) = -1 points")
 
         choose_string = "How many questions do you want to answer?"
 
