@@ -33,7 +33,6 @@ class StartGame:
     """
     Initial Game interface (asks users how many questions they
     would like to answer in the football nickname quiz).
-    Final version — robust input validation and clean reset on return.
     """
 
     def __init__(self):
@@ -142,8 +141,6 @@ class StartGame:
 class Play:
     """
     Interface for playing the Football Nickname Quiz.
-    Final version: full question logic, hints, stats, export to file,
-    play again, and comprehensive robustness throughout.
     """
 
     def __init__(self, how_many, all_questions):
@@ -170,13 +167,13 @@ class Play:
         self.all_scores_list = []
         self.all_hints_list = []
         self.all_correct_list = []
-        self.history_list = []  # Full question-by-question record for export   
+        self.history_list = []
         self.questions_correct = IntVar()
         self.questions_correct.set(0)
 
         # Shuffle and trim to requested number
         self.question_list = random.sample(all_questions, how_many)
-        self.all_questions = all_questions  # Keep full pool for wrong answer options
+        self.all_questions = all_questions
 
         body_font = ("Arial", 12)
 
@@ -205,7 +202,7 @@ class Play:
                                 bg="#FFFFFF", relief="solid", width=25)
         self.club_label.grid(row=3, pady=10, padx=10)
 
-        # Hint display label — shows prompt before any hint is used
+        # Hint display label
         self.hint_label = Label(self.game_frame, text="Use the hints below if you're stuck! 💡",
                                 font=body_font, bg="#FFF2CC",
                                 wraplength=300, justify="left")
@@ -229,16 +226,16 @@ class Play:
         # Control buttons: [frame | text | bg | command | width | row | col]
         control_button_list = [
             [self.game_frame, "Next Question", "#0057D8", self.next_question, 21, 7, None],
-            [self.hints_stats_frame, "Hint 1", "#FF8000", self.show_hint_1, 10, 0, 0],
-            [self.hints_stats_frame, "Hint 2", "#FF8000", self.show_hint_2, 10, 0, 1],
-            [self.hints_stats_frame, "Stats", "#333333", self.to_stats, 10, 0, 2],
+            [self.hints_stats_frame, "Club Hint", "#FF8000", self.show_hint_1, 12, 0, 0],
+            [self.hints_stats_frame, "Nickname Hint", "#FF8000", self.show_hint_2, 12, 0, 1],
+            [self.hints_stats_frame, "Stats", "#333333", self.to_stats, 12, 0, 2],
             [self.game_frame, "End Game", "#990000", self.close_play, 21, 9, None]
         ]
 
         control_ref_list = []
         for item in control_button_list:
             btn = Button(item[0], text=item[1], bg=item[2],
-                         command=item[3], font=("Arial", 16, "bold"),
+                         command=item[3], font=("Arial", 10, "bold"),
                          fg="#FFFFFF", width=item[4])
             btn.grid(row=item[5], column=item[6], padx=5, pady=5)
             control_ref_list.append(btn)
@@ -268,8 +265,10 @@ class Play:
         self.hint_label.config(text="Use the hints below if you're stuck! 💡")
         self.results_label.config(text="", bg=self.game_frame.cget("bg"))
         self.next_button.config(state=DISABLED)
-        self.hint1_button.config(state=NORMAL, text="Hint 1")
-        self.hint2_button.config(state=NORMAL, text="Hint 2")
+
+        # Reset hint buttons back to their original labels
+        self.hint1_button.config(state=NORMAL, text="Club Hint")
+        self.hint2_button.config(state=NORMAL, text="Nickname Hint")
 
         for btn in self.answer_buttons_ref:
             btn.config(state=NORMAL, bg="#FFFFFF")
@@ -297,31 +296,40 @@ class Play:
 
     def show_hint_1(self):
         """
-        Reveals Hint 1: a clue about the football club's location/history.
-        Costs 1 potential point. Button disabled after use.
+        Reveals the Club Hint — a clue about the football club.
+        Costs 1 potential point. If Nickname Hint was already used,
+        both hints are shown together so nothing gets wiped.
         """
         if not self.hint1_used:
             self.hint1_used = True
             self.hints_used += 1
-            self.hint1_button.config(state=DISABLED, text="Hint 1 ✓")
-            self.hint_label.config(
-                text="💡 Club Hint: {}".format(self.current_hint_team))
+            self.hint1_button.config(state=DISABLED, text="Club Hint ✓")
+
+            # Check if hint 2 was already used so we keep both hints showing
+            if self.hint2_used:
+                self.hint_label.config(
+                    text="💡 Club Hint: {}\n🔍 Nickname Hint: {}".format(
+                        self.current_hint_team, self.current_hint_nick))
+            else:
+                self.hint_label.config(
+                    text="💡 Club Hint: {}".format(self.current_hint_team))
 
     def show_hint_2(self):
         """
-        Reveals Hint 2: a clue about the meaning of the nickname.
-        Costs 1 potential point. Appends to Hint 1 if both used.
+        Reveals the Nickname Hint — a clue about the nickname meaning.
+        Costs 1 potential point. If Club Hint was already used,
+        both hints are shown together so nothing gets wiped.
         """
         if not self.hint2_used:
             self.hint2_used = True
             self.hints_used += 1
-            self.hint2_button.config(state=DISABLED, text="Hint 2 ✓")
-            current_text = self.hint_label.cget("text")
-            # Only append if Hint 1 is already showing (not the default prompt)
-            if "Club Hint" in current_text:
+            self.hint2_button.config(state=DISABLED, text="Nickname Hint ✓")
+
+            # Check if hint 1 was already used so we keep both hints showing
+            if self.hint1_used:
                 self.hint_label.config(
-                    text="{}\n🔍 Nickname Hint: {}".format(
-                        current_text, self.current_hint_nick))
+                    text="💡 Club Hint: {}\n🔍 Nickname Hint: {}".format(
+                        self.current_hint_team, self.current_hint_nick))
             else:
                 self.hint_label.config(
                     text="🔍 Nickname Hint: {}".format(self.current_hint_nick))
@@ -429,7 +437,6 @@ class Stats:
     Displays statistics popup for the Football Nickname Quiz.
     Shows: correct answers, total score, hints used, best score,
     average score. Includes option to export full history to a text file.
-    Disables game buttons while open to prevent crashes.
     """
 
     def __init__(self, partner, all_stats_info):
@@ -447,8 +454,6 @@ class Stats:
 
         self.partner = partner
         sorted_scores = sorted(all_scores)
-
-        background = "#DAE8FC"
 
         self.stats_box = Toplevel()
         self.stats_box.title("Statistics")
