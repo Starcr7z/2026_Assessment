@@ -29,9 +29,9 @@ def get_questions():
         return []
 
 
-class StartGame:
+class Startquiz:
     """
-    Initial Game interface (asks users how many questions they
+    Initial quiz interface (asks users how many questions they
     would like to answer in the football nickname quiz).
     """
 
@@ -60,8 +60,8 @@ class StartGame:
         # List of labels to be made (text | font | fg)
         start_labels_list = [
             ["Football Nickname Quiz ⚽", ("Arial", "16", "bold"), None],
-            [intro_string, ("Arial", 12), None],
-            [choose_string, ("Arial", 12, "bold"), "#009900"]
+            [intro_string, ("Arial", "12"), None],
+            [choose_string, ("Arial", "12", "bold"), "#009900"]
         ]
 
         # Create labels and add them to the reference list...
@@ -108,7 +108,7 @@ class StartGame:
         questions_wanted = self.num_questions_entry.get()
 
         # Reset label and entry box (for when users come back to home screen)
-        self.choose_label.config(fg="#009900", font=("Arial", "12", "bold"),
+        self.choose_label.config(fg="#009900", font=("Arial", 12, "bold"),
                                  text="How many questions do you want to answer?")
         self.num_questions_entry.config(bg="#FFFFFF")
 
@@ -133,7 +133,7 @@ class StartGame:
                     return
 
                 # Clear entry box and reset instruction label so
-                # that when users play a new game, they don't see an error message.
+                # that when users play a new quiz, they don't see an error message.
                 self.num_questions_entry.delete(0, END)
 
                 # Invoke Play class (and take across number of questions)
@@ -149,7 +149,7 @@ class StartGame:
         # display the error if necessary
         if has_errors == "yes":
             self.choose_label.config(text=error, fg="#990000",
-                                     font=("Arial", 10, "bold"))
+                                     font=("Arial", "10", "bold"))
             self.num_questions_entry.config(bg="#F4CCCC")
             self.num_questions_entry.delete(0, END)
 
@@ -163,11 +163,11 @@ class Play:
         self.play_box = Toplevel()
         self.play_box.title("Football Nickname Quiz")
 
-        # If users press the 'x', end the entire game
+        # If users press the 'x', end the entire quiz
         self.play_box.protocol('WM_DELETE_WINDOW', root.destroy)
 
-        self.game_frame = Frame(self.play_box)
-        self.game_frame.grid(padx=10, pady=10)
+        self.quiz_frame = Frame(self.play_box)
+        self.quiz_frame.grid(padx=10, pady=10)
 
         # Integers / String variables
         self.total_questions = how_many
@@ -204,7 +204,7 @@ class Play:
 
         play_labels_ref = []
         for item in play_labels_list:
-            self.make_label = Label(self.game_frame, text=item[0], font=item[1],
+            self.make_label = Label(self.quiz_frame, text=item[0], font=item[1],
                                bg=item[2], wraplength=300, justify="left", padx=10)
             self.make_label.grid(row=item[3], pady=10, padx=10)
             play_labels_ref.append(self.make_label)
@@ -215,19 +215,19 @@ class Play:
         self.results_label = play_labels_ref[3]
 
         # Club name display
-        self.club_label = Label(self.game_frame, text="",
+        self.club_label = Label(self.quiz_frame, text="",
                                 font=("Arial", 14, "bold"),
                                 bg="#FFFFFF", relief="solid", width=25)
         self.club_label.grid(row=3, pady=10, padx=10)
 
         # Hint display label (shows prompt before any hint is used)
-        self.hint_label = Label(self.game_frame, text="Use the hints below if you're stuck! 💡",
+        self.hint_label = Label(self.quiz_frame, text="Use the hints below if you're stuck! 💡",
                                 font=body_font, bg="#FFF2CC",
                                 wraplength=300, justify="left")
         self.hint_label.grid(row=4, pady=5, padx=10)
 
         # set up answer buttons in a 2x2 grid
-        self.answer_frame = Frame(self.game_frame)
+        self.answer_frame = Frame(self.quiz_frame)
         self.answer_frame.grid(row=6)
 
         for item in range(0, 4):
@@ -238,23 +238,23 @@ class Play:
             self.answer_buttons_ref.append(self.answer_button)
 
         # Frame to hold hints and stats buttons
-        self.hints_stats_frame = Frame(self.game_frame)
+        self.hints_stats_frame = Frame(self.quiz_frame)
         self.hints_stats_frame.grid(row=8)
 
         # list for buttons (frame | text | bg | command | width | row | column)
         control_button_list = [
-            [self.game_frame, "Next Question", "#0057D8", self.next_question, 21, 7, None],
+            [self.quiz_frame, "Next Question", "#0057D8", self.next_question, 21, 7, None],
             [self.hints_stats_frame, "Club Hint", "#FF8000", self.show_hint_1, 12, 0, 0],
             [self.hints_stats_frame, "Nickname Hint", "#FF8000", self.show_hint_2, 12, 0, 1],
             [self.hints_stats_frame, "Stats", "#333333", self.to_stats, 12, 0, 2],
-            [self.game_frame, "End Game", "#990000", self.close_play, 21, 9, None]
+            [self.quiz_frame, "End quiz", "#990000", self.close_play, 21, 9, None]
         ]
 
         # create buttons and add to list
         control_ref_list = []
         for item in control_button_list:
             make_control_button = Button(item[0], text=item[1], bg=item[2],
-                         command=item[3], font=("Arial", 10, "bold"),
+                         command=item[3], font=("Arial", "10", "bold"),
                          fg="#FFFFFF", width=item[4])
             make_control_button.grid(row=item[5], column=item[6], padx=5, pady=5)
             control_ref_list.append(make_control_button)
@@ -264,7 +264,7 @@ class Play:
         self.hint1_button = control_ref_list[1]
         self.hint2_button = control_ref_list[2]
         self.stats_button = control_ref_list[3]
-        self.end_game_button = control_ref_list[4]
+        self.end_quiz_button = control_ref_list[4]
 
         # Disable next and stats buttons at the start
         self.next_button.config(state=DISABLED)
@@ -285,7 +285,7 @@ class Play:
         self.hint2_used = False
 
         self.hint_label.config(text="Use the hints below if you're stuck! 💡")
-        self.results_label.config(text="", bg=self.game_frame.cget("bg"))
+        self.results_label.config(text="", bg=self.quiz_frame.cget("bg"))
         self.next_button.config(state=DISABLED)
 
         # Reset hint buttons back to their original labels
@@ -414,42 +414,46 @@ class Play:
         self.all_hints_list.append(self.hints_used)
         self.score_label.config(text="Score: {}".format(self.score))
 
-        # enable stats and next buttons now the question is answered
-        self.next_button.config(state=NORMAL)
-        self.stats_button.config(state=NORMAL)
+        # check if this was the last question - if so go straight to quiz over
+        if self.question_number + 1 == self.total_questions:
+            self.quiz_over()
+        else:
+            # enable next and stats buttons so user can continue
+            self.next_button.config(state=NORMAL)
+            self.stats_button.config(state=NORMAL)
 
     def next_question(self):
         """
-        Advances to next question. At end of game, shows final summary,
-        disables controls, and changes End Game to Play Again.
+        Advances to the next question.
         """
         self.question_number += 1
+        self.new_question()
 
-        # check to see if the game is over
-        if self.question_number >= self.total_questions:
-            questions_correct = self.questions_correct.get()
-            self.heading_label.config(text="Game Over!")
-            self.results_label.config(
-                text="Quiz complete! Score: {} / {}   Correct: {} / {}".format(
-                    self.score, self.total_questions * 3,
-                    questions_correct, self.total_questions),
-                bg="#FFF2CC")
-            self.next_button.config(state=DISABLED, text="Game Over")
-            for item in self.answer_buttons_ref:
-                item.config(state=DISABLED, text="")
-            self.hint1_button.config(state=DISABLED)
-            self.hint2_button.config(state=DISABLED)
-            self.club_label.config(text="")
-            self.hint_label.config(text="")
-            # change end game button to play again (and make it green)
-            self.end_game_button.config(text="Play Again", bg="#006600")
-            self.stats_button.config(bg="#990000")
-        else:
-            self.new_question()
+    def quiz_over(self):
+        """
+        Called when the last question has been answered.
+        Shows final summary and changes controls for end of quiz.
+        """
+        questions_correct = self.questions_correct.get()
+        self.heading_label.config(text="quiz Over!")
+        self.results_label.config(
+            text="Quiz complete! Score: {} / {}   Correct: {} / {}".format(
+                self.score, self.total_questions * 3,
+                questions_correct, self.total_questions),
+            bg="#FFF2CC")
+        self.next_button.config(state=DISABLED, text="quiz Over")
+        for item in self.answer_buttons_ref:
+            item.config(state=DISABLED, text="")
+        self.club_label.config(text="")
+        self.hint_label.config(text="")
+        # change end quiz button to play again (and make it green)
+        self.end_quiz_button.config(text="Play Again", bg="#006600")
+        # enable stats button and change colour to red
+        self.stats_button.config(state=NORMAL, bg="#990000")
 
     def to_stats(self):
         """
-        Retrieves everything we need to display the game statistics.
+        Retrieves everything we need to display the quiz statistics.
         """
         # IMPORTANT: retrieve number of questions correct
         # as a number (rather than the 'self' container)
@@ -460,7 +464,7 @@ class Play:
 
     def close_play(self):
         # reshow root (ie: choose questions) and end current
-        # game / allow new game to start
+        # quiz / allow new quiz to start
         root.deiconify()
         self.play_box.destroy()
 
@@ -477,7 +481,7 @@ class Stats:
         # disable buttons to prevent navigating away while stats open
         partner.hint1_button.config(state=DISABLED)
         partner.hint2_button.config(state=DISABLED)
-        partner.end_game_button.config(state=DISABLED)
+        partner.end_quiz_button.config(state=DISABLED)
         partner.stats_button.config(state=DISABLED)
 
         # Extract information from stats bundle...
@@ -639,7 +643,7 @@ class Stats:
         # Put buttons back to normal...
         partner.hint1_button.config(state=NORMAL)
         partner.hint2_button.config(state=NORMAL)
-        partner.end_game_button.config(state=NORMAL)
+        partner.end_quiz_button.config(state=NORMAL)
         partner.stats_button.config(state=NORMAL)
         self.stats_box.destroy()
 
@@ -648,5 +652,5 @@ class Stats:
 if __name__ == "__main__":
     root = Tk()
     root.title("Football Nickname Quiz")
-    StartGame()
+    Startquiz()
     root.mainloop()
