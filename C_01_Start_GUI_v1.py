@@ -15,10 +15,10 @@ class StartGame:
 
         self.start_frame = Frame(padx=10, pady=10)
         self.start_frame.grid()
-
         # Strings for labels
         intro_string = ("Each round shows a football club and 4 nickname options. "
                         "Pick the correct answer to score points.\n\n"
+                        "Correct answer without a hint = 3 points\n"
                         "Correct answer without a hint = 2 points\n"
                         "Correct answer with a hint = 1 point\n"
                         "Wrong answer = 0 points")
@@ -27,7 +27,7 @@ class StartGame:
 
         # List of labels to be made (text | font | fg)
         start_labels_list = [
-            ["Football Nickname Quiz", ("Arial", "16", "bold"), None],
+            ["Football Nickname Quiz", ("Arial", 16, "bold"), None],
             [intro_string, ("Arial", "12"), None],
             [choose_string, ("Arial", "12", "bold"), "#009900"]
         ]
@@ -48,18 +48,18 @@ class StartGame:
         self.entry_area_frame = Frame(self.start_frame)
         self.entry_area_frame.grid(row=3)
 
-        self.num_questions_entry = Entry(self.entry_area_frame, font=("Arial", 20, "bold"),
+        self.num_questions_entry = Entry(self.entry_area_frame, font=("Arial", "20", "bold"),
                                          width=10)
         self.num_questions_entry.grid(row=0, column=0, padx=10, pady=10)
 
         # Create play button
-        self.play_button = Button(self.entry_area_frame, font=("Arial", 16, "bold"),
+        self.play_button = Button(self.entry_area_frame, font=("Arial", "16", "bold"),
                                   fg="#FFFFFF", bg="#0057D8", text="Play", width=10,
                                   command=self.check_questions)
         self.play_button.grid(row=0, column=1)
 
         # Create exit button
-        self.exit_button = Button(self.start_frame, font=("Arial", 12, "bold"),
+        self.exit_button = Button(self.start_frame, font=("Arial", "12", "bold"),
                                   fg="#FFFFFF", bg="#990000", text="Exit", width=10,
                                   command=self.start_frame.quit)
         self.exit_button.grid(row=4, pady=10)
@@ -76,7 +76,7 @@ class StartGame:
         questions_wanted = self.num_questions_entry.get()
 
         # Reset label and entry box (for when users come back to home screen)
-        self.choose_label.config(fg="#009900", font=("Arial", 12, "bold"))
+        self.choose_label.config(fg="#009900", font=("Arial", "12", "bold"))
         self.num_questions_entry.config(bg="#FFFFFF")
 
         error = "Oops - Please choose a whole number between 1 and {}.".format(MAX_QUESTIONS)
@@ -98,7 +98,7 @@ class StartGame:
         # Display the error if necessary
         if has_errors == "yes":
             self.choose_label.config(text=error, fg="#990000",
-                                     font=("Arial", 10, "bold"))
+                                     font=("Arial", "10", "bold"))
             self.num_questions_entry.config(bg="#F4CCCC")
             self.num_questions_entry.delete(0, END)
 
